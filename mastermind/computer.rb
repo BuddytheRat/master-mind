@@ -20,5 +20,6 @@ class Computer < Player
     max_code_str = @code_base.to_s * @code_length
     max_code = max_code_str.to_i
     rand(min_code..max_code).to_s
+    '1233'
   end
 end

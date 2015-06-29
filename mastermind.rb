@@ -69,24 +69,27 @@ class Mastermind
   end
 
   def compare_guess(guess)
+    guess_data = Hash.new
+    guess_data[:guess] = guess.dup
     code = @code.dup
-    hint = guess.each_with_index.map do |num, i|
+    hint = Array.new
+    guess.each_with_index do |num, i|
       if num == code[i]
-        code[i] = 0
-        num = 2
-      elsif  code.any? { |num2| num2 == num }
-        code[code.index(num)] = 0
-        num = 1
-      else
-        num = 0
+        hint << 2 # Add black peg.
+        code[i] = 0 # Remove solved code.
+        guess[i] = 0
       end
     end
-    puts hint.inspect
-
-    guess_data = {
-      guess: guess,
-      hint: hint.sort
-    }
+    guess.each_with_index do |num, i|
+      if num != 0
+        if code.any? { |num2| num == num2 }
+          hint << 1 # Add white peg.
+        else
+          hint << 0
+        end
+      end
+    end
+    guess_data[:hint] = hint.sort
     guess_data
   end
 
@@ -102,7 +105,7 @@ class Mastermind
   def game_loop
     game_over = false
     loop do
-      system('cls')
+      #system('cls')
       alert @code.inspect
       if @guesser.last_guess[:guess] == @code
         alert "Congratulations! You broke the code!"
