@@ -100,11 +100,22 @@ class Mastermind
   end
 
   def game_loop
+    game_over = false
     loop do
       system('cls')
+      if @guesser.last_guess[:guess] == @code
+        alert "Congratulations! You broke the code!"
+        game_over = true
+      elsif out_of_guesses?
+        alert "You didn't break the code in time. Mastermind wins!"
+        game_over = true
+      end
+      
       @board.display(@guesser.guesses)
       display_alerts
-      break if out_of_guesses?
+      break if game_over
+
+      puts "Please enter your guess:"
       guess = new_guess
       guess_data = compare_guess(guess)
       @guesser.add_guess(guess_data)
