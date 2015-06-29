@@ -17,7 +17,7 @@ class Mastermind
     @validate = Regexp.new("[^1-#{@code_base}]")
 
     @guesser = Player.new("Kihara", @max_guess, @code_length)
-    @mastermind = Computer.new("BuddytheRat")
+    @mastermind = Computer.new("BuddytheRat", @max_guess, @code_length, @code_base)
 
     @board = Board.new(@code_length, @max_guess)
 
@@ -51,7 +51,7 @@ class Mastermind
 
   def new_code
     puts "(#{@code_length} digits, 1-#{@code_base} only.)"
-    code = ask("Mastermind, please enter your code:") { |q| q.echo = false }
+    code = @mastermind.input_secret_code
     if code_invalid?(code)
       puts "Sorry, that code isn't valid, try again!"
       code = new_code.join
@@ -103,19 +103,21 @@ class Mastermind
     game_over = false
     loop do
       system('cls')
+      alert @code.inspect
       if @guesser.last_guess[:guess] == @code
         alert "Congratulations! You broke the code!"
         game_over = true
       elsif out_of_guesses?
         alert "You didn't break the code in time. Mastermind wins!"
         game_over = true
+      else
+        alert "Please enter your guess:"
       end
       
       @board.display(@guesser.guesses)
       display_alerts
       break if game_over
 
-      puts "Please enter your guess:"
       guess = new_guess
       guess_data = compare_guess(guess)
       @guesser.add_guess(guess_data)

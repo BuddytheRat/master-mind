@@ -30,4 +30,8 @@ class Player
     gets.chomp
   end
 
+  def input_secret_code
+    ask("Mastermind, please enter your code:") { |q| q.echo = false }
+  end
+
 end
