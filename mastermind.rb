@@ -16,9 +16,6 @@ class Mastermind
     @code_base = 6
     @validate = Regexp.new("[^1-#{@code_base}]")
 
-    @guesser = Player.new("Kihara", @max_guess, @code_length)
-    @mastermind = Computer.new("BuddytheRat", @max_guess, @code_length, @code_base)
-
     @board = Board.new(@code_length, @max_guess)
 
     print """
@@ -32,13 +29,33 @@ class Mastermind
     1: Right number, wrong position.
     2: Right number, right position.
 
-    Good luck! [Press Enter to Start]
+    Good luck! 
+    [Type 1 to play as the codebreaker.]
+    [Type 2 to play as the mastermind.]
+    [Type 3 to play both.]
     """
-    gets
+
+    @guesser = Player.new("Kihara", @max_guess, @code_length)
+    @mastermind = Computer.new("BuddytheRat", @max_guess, @code_length, @code_base)
+    game_type = choose(['1', '2', '3'])
+
+    if game_type.to_i == 3
+      @mastermind = Player.new("BuddytheRat", @max_guess, @code_length)
+    elsif game_type.to_i == 2
+      @guesser, @mastermind = @mastermind, @guesser
+    end
+
 
     @code = new_code
 
     game_loop
+  end
+
+  def choose(options)
+    input = gets.chomp
+    return input if options.include?(input)
+    puts "Please choose one of the available options!"
+    choose(options)
   end
 
   def code_invalid?(code)
@@ -105,13 +122,13 @@ class Mastermind
   def game_loop
     game_over = false
     loop do
-      #system('cls')
-      alert @code.inspect
+      system('cls')
       if @guesser.last_guess[:guess] == @code
         alert "Congratulations! You broke the code!"
         game_over = true
       elsif out_of_guesses?
         alert "You didn't break the code in time. Mastermind wins!"
+        alert "The code was #{@code.inspect}"
         game_over = true
       else
         alert "Please enter your guess:"
