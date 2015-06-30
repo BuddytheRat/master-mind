@@ -34,6 +34,7 @@ class Mastermind
     [Type 1 to play as the codebreaker.]
     [Type 2 to play as the mastermind.]
     [Type 3 to play with two humans.]
+    [Ctrl + C to quit.]
     """
 
     @guesser = Player.new("Kihara", @max_guess, @code_length)
