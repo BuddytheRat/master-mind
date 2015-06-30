@@ -19,18 +19,20 @@ class Computer < Player
   end
 
   def think(guess_data)
+    hint_int = guess_data[:hint].join('').to_i
+
     # If hint is all zeroes, no longer use guessed digits.
-    if guess_data[:hint].join('').to_i == 0
+    if hint_int == 0
       @not_possible += guess_data[:guess]
     end
 
     # If none of hint are zeroes, use only last guessed digits.
-    if guess_data[:hint].join('').to_i > 1000
+    if hint_int > 1000
       @digits_known = guess_data[:guess]
     end
 
     # Build probability matrix.
-    @possible += guess_data[:guess] * (guess_data[:hint].join('').to_i)
+    @possible += guess_data[:guess] * (hint_int)
     @possible -= @not_possible.to_a
   end
 
