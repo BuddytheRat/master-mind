@@ -7,7 +7,7 @@ class Computer < Player
     @code_length = code_length
     @code_base = code_base
 
-    @possible = (1..@code_base).to_a * 10
+    @possible = (1..@code_base).to_a * 500
     @not_possible = Set.new
     @past_guesses = Array.new
     @digits_known = false
@@ -19,19 +19,30 @@ class Computer < Player
   end
 
   def think(guess_data)
+    hint_int = guess_data[:hint].join('').to_i
+
+    #waste time
+    sleep(1.0/10.0)
+
     # If hint is all zeroes, no longer use guessed digits.
-    if guess_data[:hint].join('').to_i == 0
+    if hint_int == 0
       @not_possible += guess_data[:guess]
     end
 
     # If none of hint are zeroes, use only last guessed digits.
-    if guess_data[:hint].join('').to_i > 1000
+    if hint_int > 1000
       @digits_known = guess_data[:guess]
     end
 
     # Build probability matrix.
-    @possible += guess_data[:guess] * (guess_data[:hint].join('').to_i)
+    if hint_int >= 100
+      @possible += guess_data[:guess] * (hint_int * 10)
+    end
     @possible -= @not_possible.to_a
+  end
+
+  def display_brain
+    possibility_matrix.inspect + "\n" + @not_possible.inspect
   end
 
   def possibility_matrix

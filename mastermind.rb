@@ -11,9 +11,9 @@ class Mastermind
   def initialize
     @alerts = Array.new
 
-    @max_guess = 12
+    @max_guess = 100
     @code_length = 4
-    @code_base = 6
+    @code_base = 9
     @validate = Regexp.new("[^1-#{@code_base}]")
     @turn_count = 0
 
@@ -136,7 +136,8 @@ class Mastermind
         alert "Please enter your guess:"
       end
       
-      @board.display(@guesser.guesses)
+      #@board.display(@guesser.guesses)
+      @board.display_line(@guesser.guess_data(@turn_count))
       display_alerts
       break if game_over
 
@@ -144,6 +145,7 @@ class Mastermind
       guess_data = compare_guess(guess)
 
       @guesser.think(guess_data) if @guesser.is_a? (Computer)
+      alert @guesser.display_brain if @guesser.is_a? (Computer)
 
       @guesser.add_guess(guess_data)
 

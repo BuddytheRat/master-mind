@@ -21,4 +21,15 @@ class Board
     end
     print row_top
 	end
+
+  def display_line(guess_data)
+    row_top = @border[:corner] + (@border[:top] * ((@code_length * 4) + 3)) + @border[:corner] + "\n"
+    print row_top
+    print @border[:side]
+    guess_data[:guess].each { |num| print num.to_s.center(3, " ") }
+    print @border[:side] + " "
+    guess_data[:hint].each { |num| print num }
+    print " " + @border[:side] + "\n"
+    print row_top
+  end
 end

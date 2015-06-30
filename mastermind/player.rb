@@ -18,6 +18,10 @@ class Player
     @guess_count += 1
   end
 
+  def guess_data(num)
+    @guesses[num-1]
+  end
+
   def guess(num)
     @guesses[num-1][:guess]
   end
