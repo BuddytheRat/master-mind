@@ -11,10 +11,11 @@ class Mastermind
   def initialize
     @alerts = Array.new
 
-    @max_guess = 8
+    @max_guess = 100
     @code_length = 4
     @code_base = 6
     @validate = Regexp.new("[^1-#{@code_base}]")
+    @turn_count = 0
 
     @board = Board.new(@code_length, @max_guess)
 
@@ -90,22 +91,14 @@ class Mastermind
     guess_data[:guess] = guess.dup
     code = @code.dup
     hint = Array.new
+    
     guess.each_with_index do |num, i|
-      if num == code[i]
-        hint << 2 # Add black peg.
-        code[i] = 0 # Remove solved code.
-        guess[i] = 0
-      end
+      hint << 0 if code.none? { |num2| num == num2 }
+      hint << 1 if code.any? { |num2| num == num2 } && code[i] != num
+      hint << 2 if code[i] == num
+      code[code.index(num)] = 0 if hint.last > 0
     end
-    guess.each_with_index do |num, i|
-      if num != 0
-        if code.any? { |num2| num == num2 }
-          hint << 1 # Add white peg.
-        else
-          hint << 0
-        end
-      end
-    end
+
     guess_data[:hint] = hint.sort
     guess_data
   end
@@ -124,7 +117,7 @@ class Mastermind
     loop do
       system('cls')
       if @guesser.last_guess[:guess] == @code
-        alert "Congratulations! You broke the code!"
+        alert "Congratulations! You broke the code! (#{@turn_count} turns)"
         game_over = true
       elsif out_of_guesses?
         alert "You didn't break the code in time. Mastermind wins!"
@@ -134,13 +127,20 @@ class Mastermind
         alert "Please enter your guess:"
       end
       
+      alert @guesser.possibility_matrix.inspect
+      alert @guesser.not_possible.inspect
       @board.display(@guesser.guesses)
       display_alerts
       break if game_over
 
       guess = new_guess
       guess_data = compare_guess(guess)
+
+      @guesser.think(guess_data) if @guesser.is_a? (Computer)
+
       @guesser.add_guess(guess_data)
+
+      @turn_count += 1
     end
   end
 end
