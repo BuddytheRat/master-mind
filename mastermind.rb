@@ -100,8 +100,6 @@ class Mastermind
       end
     end
 
-    puts code.inspect
-
     guess.each_with_index do |num, i|
       next if num == 0
       hint << 0 if code.none? { |num2| num == num2 }
@@ -125,7 +123,7 @@ class Mastermind
   def game_loop
     game_over = false
     loop do
-      #system('cls')
+      system('cls')
       if @guesser.last_guess[:guess] == @code
         alert "#{@guesser.name} broke the code! Mastermind loses! (#{@turn_count} turns)"
         game_over = true
