@@ -35,7 +35,7 @@ class Computer < Player
     end
 
     # Build probability matrix.
-    if hint_int >= 100
+    if hint_int >= 100 && !@digits_known
       @possible += guess_data[:guess] * (hint_int * 10)
     end
     @possible -= @not_possible.to_a
