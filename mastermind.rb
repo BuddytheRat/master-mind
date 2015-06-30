@@ -37,7 +37,7 @@ class Mastermind
     """
 
     @guesser = Player.new("Kihara", @max_guess, @code_length)
-    @mastermind = Computer.new("Computer", @max_guess, @code_length, @code_base)
+    @mastermind = Computer.new("CompuButte3000", @max_guess, @code_length, @code_base)
     game_type = choose(['1', '2', '3'])
 
     if game_type.to_i == 3
@@ -91,11 +91,21 @@ class Mastermind
     guess_data[:guess] = guess.dup
     code = @code.dup
     hint = Array.new
-    
+
     guess.each_with_index do |num, i|
+      if code[i] == num
+        hint << 2 
+        code[i] = 0
+        guess[i] = 0
+      end
+    end
+
+    puts code.inspect
+
+    guess.each_with_index do |num, i|
+      next if num == 0
       hint << 0 if code.none? { |num2| num == num2 }
-      hint << 1 if code.any? { |num2| num == num2 } && code[i] != num
-      hint << 2 if code[i] == num
+      hint << 1 if code.any? { |num2| num == num2 }
       code[code.index(num)] = 0 if hint.last > 0
     end
 
@@ -115,9 +125,9 @@ class Mastermind
   def game_loop
     game_over = false
     loop do
-      system('cls')
+      #system('cls')
       if @guesser.last_guess[:guess] == @code
-        alert "Congratulations! You broke the code! (#{@turn_count} turns)"
+        alert "#{@guesser.name} broke the code! Mastermind loses! (#{@turn_count} turns)"
         game_over = true
       elsif out_of_guesses?
         alert "#{@guesser.name} didn't break the code in time. Mastermind wins!"
