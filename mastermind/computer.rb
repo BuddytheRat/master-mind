@@ -1,7 +1,6 @@
 class Computer < Player
   require 'set'
-
-  attr_reader :possible, :past_guesses, :not_possible
+  
   def initialize(name, max_guess, code_length, code_base)
     super(name, max_guess, code_length)
 
@@ -31,7 +30,7 @@ class Computer < Player
     end
 
     # Build probability matrix.
-    @possible += guess_data[:guess] * (guess_data[:hint].join('').to_i / 20)
+    @possible += guess_data[:guess] * (guess_data[:hint].join('').to_i)
     @possible -= @not_possible.to_a
   end
 

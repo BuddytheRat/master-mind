@@ -11,7 +11,7 @@ class Mastermind
   def initialize
     @alerts = Array.new
 
-    @max_guess = 100
+    @max_guess = 12
     @code_length = 4
     @code_base = 6
     @validate = Regexp.new("[^1-#{@code_base}]")
@@ -33,11 +33,11 @@ class Mastermind
     Good luck! 
     [Type 1 to play as the codebreaker.]
     [Type 2 to play as the mastermind.]
-    [Type 3 to play both.]
+    [Type 3 to play with two humans.]
     """
 
     @guesser = Player.new("Kihara", @max_guess, @code_length)
-    @mastermind = Computer.new("BuddytheRat", @max_guess, @code_length, @code_base)
+    @mastermind = Computer.new("Computer", @max_guess, @code_length, @code_base)
     game_type = choose(['1', '2', '3'])
 
     if game_type.to_i == 3
@@ -120,15 +120,13 @@ class Mastermind
         alert "Congratulations! You broke the code! (#{@turn_count} turns)"
         game_over = true
       elsif out_of_guesses?
-        alert "You didn't break the code in time. Mastermind wins!"
+        alert "#{@guesser.name} didn't break the code in time. Mastermind wins!"
         alert "The code was #{@code.inspect}"
         game_over = true
       else
         alert "Please enter your guess:"
       end
       
-      alert @guesser.possibility_matrix.inspect
-      alert @guesser.not_possible.inspect
       @board.display(@guesser.guesses)
       display_alerts
       break if game_over
@@ -145,4 +143,6 @@ class Mastermind
   end
 end
 
-@game = Mastermind.new()
+loop do
+  @game = Mastermind.new()
+end
